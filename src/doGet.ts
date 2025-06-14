@@ -1,6 +1,6 @@
 type GetResponse = {
 	result: "done" | "error";
-	data?: unknown;
+	data?: PurposeResponse[];
 	error?: string;
 };
 
@@ -16,13 +16,13 @@ function doGet(
 	const response: GetResponse = { result: "done" };
 
 	try {
-		const type = e.parameter.type;
+		const properties = PropertiesService.getScriptProperties().getProperties();
+		const config = getConfigPurpose(properties.SPREADSHEET_ID_CONFIG);
 
-		if (!type) {
-			throw new Error("Invalid parameter.");
-		}
-
-		response.data = type;
+		response.data = config.list.map((item) => ({
+			value: item.type,
+			label: item.name,
+		}));
 	} catch (error) {
 		response.result = "error";
 		response.error = error.message;
