@@ -1,24 +1,47 @@
+type ConfigListItem = {
+	type: string;
+	name: string;
+	sheetId: string;
+	folderId: string;
+};
+type ConfigInputItem = {
+	name: string;
+	maxlength: number;
+	required: boolean;
+};
+
 type Config = {
-	list: {
-		type: string;
-		name: string;
-		sheetId: string;
-		folderId: string;
-	}[];
-	inputs: {
-		name: string;
-		maxlength: number;
-		required: boolean;
-	}[];
+	list: ConfigListItem[];
+	inputs: ConfigInputItem[];
 };
 
 function _getConfig(): void {
 	const properties = PropertiesService.getScriptProperties().getProperties();
-	const config = getConfigPurpose(properties.SPREADSHEET_ID_CONFIG);
+	const config = getConfig(properties.SPREADSHEET_ID_CONFIG);
 	console.log(config);
 }
 
-function getConfigPurpose(sheetId: string): Config {
+function getConfigList(sheetId: string): ConfigListItem[] {
+	const ss = SpreadsheetApp.openById(sheetId);
+	const sheetList = ss.getSheetByName("list");
+
+	if (!sheetList) {
+		throw new Error("Config not found.");
+	}
+
+	const config = sheetList.getDataRange().getValues().slice(1);
+
+	return config
+		.filter((row) => !row[0])
+		.map((row) => ({
+			type: row[1].trim(),
+			name: row[2].trim(),
+			sheetId: row[3].trim(),
+			folderId: row[4].trim(),
+		}));
+}
+
+function getConfig(sheetId: string): Config {
 	const ss = SpreadsheetApp.openById(sheetId);
 	const sheetList = ss.getSheetByName("list");
 	const sheetInputs = ss.getSheetByName("inputs");

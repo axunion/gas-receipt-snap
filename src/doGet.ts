@@ -1,25 +1,25 @@
 type GetResponse = {
 	result: "done" | "error";
-	data?: PurposeResponse[];
+	data?: {
+		value: string;
+		label: string;
+	}[];
 	error?: string;
 };
 
 function _doGet() {
-	const e = { parameter: { type: "" } };
-	const result = doGet(e as unknown as GoogleAppsScript.Events.DoGet);
+	const result = doGet();
 	console.log(result.getContent());
 }
 
-function doGet(
-	e: GoogleAppsScript.Events.DoGet,
-): GoogleAppsScript.Content.TextOutput {
+function doGet(): GoogleAppsScript.Content.TextOutput {
 	const response: GetResponse = { result: "done" };
 
 	try {
 		const properties = PropertiesService.getScriptProperties().getProperties();
-		const config = getConfigPurpose(properties.SPREADSHEET_ID_CONFIG);
+		const configList = getConfigList(properties.SPREADSHEET_ID_CONFIG);
 
-		response.data = config.list.map((item) => ({
+		response.data = configList.map((item) => ({
 			value: item.type,
 			label: item.name,
 		}));
