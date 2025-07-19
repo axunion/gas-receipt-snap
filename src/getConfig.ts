@@ -29,9 +29,9 @@ function getConfigList(sheetId: string): ConfigListItem[] {
 		throw new Error("Config not found.");
 	}
 
-	const config = sheetList.getDataRange().getValues().slice(1);
+	const list = sheetList.getDataRange().getValues().slice(1);
 
-	return config
+	return list
 		.filter((row) => !row[0])
 		.map((row) => ({
 			type: row[1].trim(),
@@ -50,11 +50,11 @@ function getConfig(sheetId: string): Config {
 		throw new Error("Config not found.");
 	}
 
-	const config = sheetList.getDataRange().getValues().slice(1);
+	const list = sheetList.getDataRange().getValues().slice(1);
 	const inputs = sheetInputs.getDataRange().getValues().slice(1);
 
 	return {
-		list: config
+		list: list
 			.filter((row) => !row[0])
 			.map((row) => ({
 				type: row[1].trim(),
