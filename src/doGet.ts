@@ -1,11 +1,17 @@
-type GetResponse = {
-	result: "done" | "error";
-	data?: {
+type GetSuccessResponse = {
+	result: "done";
+	data: {
 		value: string;
 		label: string;
 	}[];
-	error?: string;
 };
+
+type GetErrorResponse = {
+	result: "error";
+	error: string;
+};
+
+type GetResponse = GetSuccessResponse | GetErrorResponse;
 
 function _doGet() {
 	const result = doGet();
@@ -13,19 +19,24 @@ function _doGet() {
 }
 
 function doGet(): GoogleAppsScript.Content.TextOutput {
-	const response: GetResponse = { result: "done" };
+	let response: GetResponse;
 
 	try {
 		const properties = PropertiesService.getScriptProperties().getProperties();
 		const configList = getConfigList(properties.SPREADSHEET_ID_CONFIG);
 
-		response.data = configList.map((item) => ({
-			value: item.type,
-			label: item.name,
-		}));
+		response = {
+			result: "done",
+			data: configList.map((item) => ({
+				value: item.type,
+				label: item.name,
+			})),
+		};
 	} catch (error) {
-		response.result = "error";
-		response.error = error.message;
+		response = {
+			result: "error",
+			error: error.message,
+		};
 	}
 
 	return ContentService.createTextOutput(JSON.stringify(response));
