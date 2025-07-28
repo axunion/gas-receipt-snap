@@ -2,6 +2,7 @@ type ConfigListItem = {
 	type: string;
 	name: string;
 	sheetId: string;
+	sheetName: string;
 	folderId: string;
 };
 type ConfigInputItem = {
@@ -37,7 +38,8 @@ function getConfigList(sheetId: string): ConfigListItem[] {
 			type: row[1].trim(),
 			name: row[2].trim(),
 			sheetId: row[3].trim(),
-			folderId: row[4].trim(),
+			sheetName: row[4].trim(),
+			folderId: row[5].trim(),
 		}));
 }
 
@@ -60,7 +62,8 @@ function getConfig(sheetId: string): Config {
 				type: row[1].trim(),
 				name: row[2].trim(),
 				sheetId: row[3].trim(),
-				folderId: row[4].trim(),
+				sheetName: row[4].trim(),
+				folderId: row[5].trim(),
 			})),
 		inputs: inputs.map((row) => ({
 			name: row[0].trim(),
