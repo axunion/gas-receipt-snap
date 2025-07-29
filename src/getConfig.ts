@@ -44,31 +44,15 @@ function getConfigList(sheetId: string): ConfigListItem[] {
 }
 
 function getConfig(sheetId: string): Config {
-	const ss = SpreadsheetApp.openById(sheetId);
-	const sheetList = ss.getSheetByName("list");
-	const sheetInputs = ss.getSheetByName("inputs");
-
-	if (!sheetList || !sheetInputs) {
-		throw new Error("Config not found.");
-	}
-
-	const list = sheetList.getDataRange().getValues().slice(1);
-	const inputs = sheetInputs.getDataRange().getValues().slice(1);
-
 	return {
-		list: list
-			.filter((row) => !row[0])
-			.map((row) => ({
-				type: row[1].trim(),
-				name: row[2].trim(),
-				sheetId: row[3].trim(),
-				sheetName: row[4].trim(),
-				folderId: row[5].trim(),
-			})),
-		inputs: inputs.map((row) => ({
-			name: row[0].trim(),
-			maxlength: Number.parseInt(row[1]) || 0,
-			required: Boolean(row[2]),
-		})),
+		list: getConfigList(sheetId),
+		inputs: [
+			{ name: "date", maxlength: 16, required: true },
+			{ name: "name", maxlength: 24, required: true },
+			{ name: "amount", maxlength: 8, required: true },
+			{ name: "details", maxlength: 64, required: false },
+			{ name: "notes", maxlength: 1024, required: false },
+			{ name: "noImageReason", maxlength: 1024, required: false },
+		],
 	};
 }
