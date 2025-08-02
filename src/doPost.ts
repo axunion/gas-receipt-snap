@@ -16,9 +16,10 @@ function doPost(
 
 	try {
 		const parameter = JSON.parse(e.postData.contents);
-		const { type, recaptchaToken, image, noImageReason } = parameter;
+		const { destination, recaptchaToken, receiptImage, noImageReason } =
+			parameter;
 
-		if (!type || !recaptchaToken || (!image && !noImageReason)) {
+		if (!destination || !recaptchaToken || (!receiptImage && !noImageReason)) {
 			throw new Error("Invalid parameter.");
 		}
 
@@ -51,10 +52,10 @@ function doPost(
 			throw new Error(`reCAPTCHA verification failed. ${score} ${errorCodes}`);
 		}
 
-		const targetConfig = config.list.find((item) => item.type === type);
+		const targetConfig = config.list.find((item) => item.type === destination);
 
 		if (!targetConfig) {
-			throw new Error("Invalid type specified.");
+			throw new Error("Invalid destination specified.");
 		}
 
 		const { sheetId, sheetName, folderId } = targetConfig;
@@ -67,12 +68,12 @@ function doPost(
 		const [date, name, amount, detail, note] = checkResult.values;
 		let receipt: string;
 
-		if (image) {
+		if (receiptImage) {
 			const { mimeType, extension } = detectImageMimeType({
-				base64Data: image,
+				base64Data: receiptImage,
 			});
 			const fileName = `${date}_${name}_${detail}.${extension}`;
-			const imageBlob = Utilities.base64Decode(image);
+			const imageBlob = Utilities.base64Decode(receiptImage);
 			const blob = Utilities.newBlob(imageBlob, mimeType, fileName);
 
 			saveImage({ image: blob, fileName, folderId });
