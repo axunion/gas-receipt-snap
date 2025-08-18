@@ -24,13 +24,13 @@ function _getConfig(): void {
 
 function getConfigList(sheetId: string): ConfigListItem[] {
 	const ss = SpreadsheetApp.openById(sheetId);
-	const sheetList = ss.getSheetByName("list");
+	const sheet = ss.getSheetByName("config");
 
-	if (!sheetList) {
+	if (!sheet) {
 		throw new Error("Config not found.");
 	}
 
-	const list = sheetList.getDataRange().getValues().slice(1);
+	const list = sheet.getDataRange().getValues().slice(1);
 
 	return list
 		.filter((row) => !row[0])
