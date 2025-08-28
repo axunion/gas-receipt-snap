@@ -9,6 +9,12 @@ type PostErrorResponse = {
 
 type PostResponse = PostSuccessResponse | PostErrorResponse;
 
+function _doPost() {
+	const e = { parameter: { type: "" } };
+	const result = doPost(e as unknown as GoogleAppsScript.Events.DoPost);
+	console.log(result.getContent());
+}
+
 function doPost(
 	e: GoogleAppsScript.Events.DoPost,
 ): GoogleAppsScript.Content.TextOutput {
@@ -32,7 +38,7 @@ function doPost(
 		}
 
 		const config = getConfig(configSheetId);
-		const checkResult = validateParameters({
+		const checkResult = _validateParameters({
 			inputValues: parameter,
 			acceptedRows: config.inputs,
 		});
@@ -41,7 +47,7 @@ function doPost(
 			throw new Error(`Invalid Parameter: ${checkResult.errors.join(", ")}`);
 		}
 
-		const recaptchaResponse = verifyRecaptcha({
+		const recaptchaResponse = _verifyRecaptcha({
 			secret,
 			token: recaptchaToken,
 		});
@@ -69,14 +75,14 @@ function doPost(
 		let receipt: string;
 
 		if (receiptImage) {
-			const { mimeType, extension } = detectImageMimeType({
+			const { mimeType, extension } = _detectImageMimeType({
 				base64Data: receiptImage,
 			});
 			const fileName = `${date}_${name}_${detail}.${extension}`;
 			const imageBlob = Utilities.base64Decode(receiptImage);
 			const blob = Utilities.newBlob(imageBlob, mimeType, fileName);
 
-			saveImage({ image: blob, fileName, folderId });
+			_saveImage({ image: blob, fileName, folderId });
 			receipt = fileName;
 		} else {
 			receipt = noImageReason;

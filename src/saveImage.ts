@@ -8,7 +8,7 @@
  * @returns The Google Apps Script Drive File object representing the saved image.
  * @throws Error if folderId or fileName is empty, if the folder is not found, or if there is an error during file creation or naming.
  */
-function saveImage(params: {
+function _saveImage(params: {
 	image: GoogleAppsScript.Base.BlobSource;
 	fileName: string;
 	folderId: string;

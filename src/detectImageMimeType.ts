@@ -6,9 +6,10 @@
  * @returns An object containing the detected MIME type and file extension.
  * @throws Error if base64Data is empty or invalid.
  */
-function detectImageMimeType(params: {
-	base64Data: string;
-}): { mimeType: string; extension: string } {
+function _detectImageMimeType(params: { base64Data: string }): {
+	mimeType: string;
+	extension: string;
+} {
 	const { base64Data } = params;
 
 	if (
