@@ -1,7 +1,7 @@
 type ConfigListItem = {
 	type: string;
 	name: string;
-	sheetId: string;
+	fileId: string;
 	sheetName: string;
 	folderId: string;
 };
@@ -16,15 +16,22 @@ type Config = {
 	inputs: ConfigInputItem[];
 };
 
+const CONFIG_SHEET_NAME = "config" as const;
+const COL_TYPE = 1;
+const COL_NAME = 2;
+const COL_FILE_ID = 3;
+const COL_SHEET_NAME = 4;
+const COL_FOLDER_ID = 5;
+
 function _getConfig(): void {
 	const properties = PropertiesService.getScriptProperties().getProperties();
 	const config = getConfig(properties.SPREADSHEET_ID_CONFIG);
 	console.log(config);
 }
 
-function getConfigList(sheetId: string): ConfigListItem[] {
-	const ss = SpreadsheetApp.openById(sheetId);
-	const sheet = ss.getSheetByName("config");
+function getConfigList(fileId: string): ConfigListItem[] {
+	const ss = SpreadsheetApp.openById(fileId);
+	const sheet = ss.getSheetByName(CONFIG_SHEET_NAME);
 
 	if (!sheet) {
 		throw new Error("Config not found.");
@@ -35,17 +42,17 @@ function getConfigList(sheetId: string): ConfigListItem[] {
 	return list
 		.filter((row) => !row[0])
 		.map((row) => ({
-			type: row[1].trim(),
-			name: row[2].trim(),
-			sheetId: row[3].trim(),
-			sheetName: row[4].trim(),
-			folderId: row[5].trim(),
+			type: row[COL_TYPE].trim(),
+			name: row[COL_NAME].trim(),
+			fileId: row[COL_FILE_ID].trim(),
+			sheetName: row[COL_SHEET_NAME].trim(),
+			folderId: row[COL_FOLDER_ID].trim(),
 		}));
 }
 
-function getConfig(sheetId: string): Config {
+function getConfig(fileId: string): Config {
 	return {
-		list: getConfigList(sheetId),
+		list: getConfigList(fileId),
 		inputs: [
 			{ name: "date", maxlength: 16, required: true },
 			{ name: "name", maxlength: 24, required: true },

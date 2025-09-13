@@ -64,8 +64,8 @@ function doPost(
 			throw new Error("Invalid destination specified.");
 		}
 
-		const { sheetId, sheetName, folderId } = targetConfig;
-		const sheet = SpreadsheetApp.openById(sheetId).getSheetByName(sheetName);
+		const { fileId, sheetName, folderId } = targetConfig;
+		const sheet = SpreadsheetApp.openById(fileId).getSheetByName(sheetName);
 
 		if (!sheet) {
 			throw new Error("Sheet not found.");
