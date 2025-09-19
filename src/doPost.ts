@@ -37,26 +37,13 @@ function doPost(
 			throw new Error("Invalid script properties.");
 		}
 
+		_verifyRecaptcha({ secret, token: recaptchaToken });
+
 		const config = getConfig(configSheetId);
-		const checkResult = _validateParameters({
+		const validateResult = _validateParameters({
 			inputValues: parameter,
 			acceptedRows: config.inputs,
 		});
-
-		if (checkResult.errors.length > 0) {
-			throw new Error(`Invalid Parameter: ${checkResult.errors.join(", ")}`);
-		}
-
-		const recaptchaResponse = _verifyRecaptcha({
-			secret,
-			token: recaptchaToken,
-		});
-
-		if (!recaptchaResponse.success || recaptchaResponse.score < 0.5) {
-			const score = recaptchaResponse.score || "-";
-			const errorCodes = recaptchaResponse["error-codes"]?.join(" ") || "";
-			throw new Error(`reCAPTCHA verification failed. ${score} ${errorCodes}`);
-		}
 
 		const targetConfig = config.list.find((item) => item.type === destination);
 
@@ -71,8 +58,8 @@ function doPost(
 			throw new Error("Sheet not found.");
 		}
 
-		const [date, name, amount, detail, note] = checkResult.values;
-		let receipt: string;
+		const [date, name, amount, detail, note] = validateResult;
+		let receipt = "";
 
 		if (receiptImage) {
 			const { mimeType, extension } = _detectImageMimeType({
