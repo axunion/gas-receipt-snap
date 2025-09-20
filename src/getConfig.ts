@@ -57,8 +57,8 @@ function getConfig(fileId: string): Config {
 			{ name: "date", maxlength: 16, required: true },
 			{ name: "name", maxlength: 24, required: true },
 			{ name: "amount", maxlength: 8, required: true },
-			{ name: "detail", maxlength: 64, required: false },
-			{ name: "note", maxlength: 1024, required: false },
+			{ name: "details", maxlength: 64, required: true },
+			{ name: "notes", maxlength: 1024, required: false },
 			{ name: "noImageReason", maxlength: 1024, required: false },
 		],
 	};

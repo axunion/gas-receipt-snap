@@ -22,10 +22,10 @@ function doPost(
 
 	try {
 		const parameter = JSON.parse(e.postData.contents);
-		const { destination, recaptchaToken, receiptImage, noImageReason } =
+		const { recaptchaToken, destination, receiptImage, noImageReason } =
 			parameter;
 
-		if (!destination || !recaptchaToken || (!receiptImage && !noImageReason)) {
+		if (!recaptchaToken || !destination || (!receiptImage && !noImageReason)) {
 			throw new Error("Invalid parameter.");
 		}
 
@@ -58,14 +58,14 @@ function doPost(
 			throw new Error("Sheet not found.");
 		}
 
-		const [date, name, amount, detail, note] = validateResult;
+		const [date, name, amount, details, notes] = validateResult;
 		let receipt = "";
 
 		if (receiptImage) {
 			const { mimeType, extension } = _detectImageMimeType({
 				base64Data: receiptImage,
 			});
-			const fileName = `${date}_${name}_${detail}.${extension}`;
+			const fileName = `${date}_${name}_${details}.${extension}`;
 			const imageBlob = Utilities.base64Decode(receiptImage);
 			const blob = Utilities.newBlob(imageBlob, mimeType, fileName);
 
@@ -75,7 +75,7 @@ function doPost(
 			receipt = noImageReason;
 		}
 
-		sheet.appendRow([date, name, amount, detail, receipt, note]);
+		sheet.appendRow([date, name, details, amount, notes, receipt]);
 	} catch (error) {
 		response = {
 			result: "error",
