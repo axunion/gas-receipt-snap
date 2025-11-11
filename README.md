@@ -21,14 +21,14 @@ Simple template for building and deploying a Google Apps Script Web App with Typ
 ## Prerequisites
 
 - Node.js (16+)
-- Global clasp: `npm i -g @google/clasp`
+- Global clasp: `pnpm i -g @google/clasp`
 - Google account (Apps Script enabled)
 
 ## Setup
 
 1. Install deps:
 ```bash
-npm install
+pnpm install
 ```
 2. Login:
 ```bash
@@ -45,7 +45,7 @@ clasp clone <SCRIPT_ID>
 
 Always build before pushing. The build script compiles TypeScript and copies `appsscript.json` into `dist/`.
 ```bash
-npm run build
+pnpm build
 ```
 
 ## Deploy
@@ -70,13 +70,13 @@ clasp open
 
 ```bash
 # Format check
-npm run format
+pnpm format
 # Lint check
-npm run lint
+pnpm lint
 # Auto fix format + lint
-npm run check:write
+pnpm check:write
 # Rebuild & push
-npm run build && clasp push --rootDir dist
+pnpm build && clasp push --rootDir dist
 ```
 
 ## Endpoints (Web App)
@@ -105,7 +105,7 @@ Error response shape:
 
 ## Customize
 
-- Add new logic: create files in `src/` then `npm run build`
+- Add new logic: create files in `src/` then `pnpm build`
 - Config: edit `src/appsscript.json`
 - TypeScript options: `tsconfig.json`
 - Biome rules: add a `biome.json` if needed
